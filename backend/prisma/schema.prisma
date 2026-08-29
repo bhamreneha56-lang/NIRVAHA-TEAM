@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  role      String   // citizen, government, university, industry
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Problem {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  category    String
+  district    String
+  lat         Float
+  lng         Float
+  submitter   String
+  status      String   @default("Submitted") 
+  priority    String   @default("Medium")
+  reportedOn  DateTime @default(now())
+  upvotes     Int      @default(0)
+  photo       String?
+  projects    Project[]
+}
+
+model Project {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  status       String      @default("In Progress")
+  fundingAsk   Float       @default(0)
+  fundingPledged Float     @default(0)
+  fundingReleased Float    @default(0)
+  ipStatus     String      @default("Not Applicable")
+  universityId String
+  industryId   String?
+  problemId    String      @db.ObjectId
+  problem      Problem     @relation(fields: [problemId], references: [id])
+  milestones   Milestone[]
+}
+
+model Milestone {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  status     String   @default("To Do")
+  dueOn      String?
+  verifiedOn String?
+  projectId  String   @db.ObjectId
+  project    Project  @relation(fields: [projectId], references: [id])
+}
