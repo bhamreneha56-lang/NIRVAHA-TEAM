@@ -9,6 +9,47 @@ export default function CitizenDashboard() {
   
   const [form, setForm] = useState({ title: '', description: '' });
   const [submitting, setSubmitting] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+
+  const handleListen = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Your browser doesn't support voice recognition. Try Chrome or Edge.");
+      return;
+    }
+    
+    if (isListening) return; // Prevent multiple instances
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-IN'; // Works great for Hinglish too
+
+    recognition.onstart = () => setIsListening(true);
+    
+    recognition.onresult = (event) => {
+      let currentTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        currentTranscript += event.results[i][0].transcript;
+      }
+      // Update form description with the recognized text
+      setForm(prev => ({ ...prev, description: currentTranscript }));
+    };
+
+    recognition.onerror = (event) => {
+      console.error(event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => setIsListening(false);
+
+    recognition.start();
+    
+    // Auto stop after 10 seconds of listening for demo purposes
+    setTimeout(() => {
+      recognition.stop();
+    }, 10000);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -150,13 +191,20 @@ export default function CitizenDashboard() {
                 <p className="text-orange-100 max-w-md relative z-10 font-medium">
                   Speak in Hindi, Santhali, or English. Our AI will automatically translate, structure, and categorize your problem.
                 </p>
-                <div className="mt-8 flex items-center gap-6 relative z-10">
-                  <button type="button" className="w-20 h-20 bg-white text-orange-600 rounded-full shadow-[0_0_40px_rgba(255,255,255,0.4)] flex flex-col items-center justify-center hover:scale-105 transition-transform group relative">
-                    <span className="absolute inset-0 border-2 border-white rounded-full animate-ping opacity-50"></span>
-                    <span className="text-3xl">🎤</span>
-                  </button>
-                  <div className="text-sm font-bold tracking-widest uppercase">Tap to speak</div>
-                </div>
+                  <div className="mt-8 flex items-center gap-6 relative z-10">
+                    <button 
+                      type="button" 
+                      onClick={handleListen}
+                      className={`w-20 h-20 rounded-full shadow-[0_0_40px_rgba(255,255,255,0.4)] flex flex-col items-center justify-center transition-transform group relative ${isListening ? 'bg-red-500 text-white scale-110 shadow-[0_0_40px_rgba(239,68,68,0.6)]' : 'bg-white text-orange-600 hover:scale-105'}`}
+                    >
+                      {isListening && <span className="absolute inset-0 border-2 border-red-500 rounded-full animate-ping opacity-50"></span>}
+                      {!isListening && <span className="absolute inset-0 border-2 border-white rounded-full animate-ping opacity-50"></span>}
+                      <span className="text-3xl">🎤</span>
+                    </button>
+                    <div className="text-sm font-bold tracking-widest uppercase">
+                      {isListening ? 'Listening... Speak now' : 'Tap to speak'}
+                    </div>
+                  </div>
               </div>
               
               <div className="p-8">

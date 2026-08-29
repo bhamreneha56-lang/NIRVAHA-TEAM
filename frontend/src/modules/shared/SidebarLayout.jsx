@@ -24,13 +24,13 @@ export default function SidebarLayout({ children, activeTab, setActiveTab, roleT
         <div>
           <div className="p-6 flex items-center gap-4">
             {/* Tiranga Logo */}
-            <div className="w-10 h-10 rounded-xl shadow-md grid place-items-center font-extrabold text-xl relative overflow-hidden">
-               <div className="absolute top-0 w-full h-1/3 bg-[#FF9933]"></div>
+            <div className="w-10 h-10 rounded-xl shadow-md grid place-items-center font-extrabold text-xl relative overflow-hidden border border-slate-200">
+               <div className="absolute top-0 w-full h-1/3 bg-[#E37000]"></div>
                <div className="absolute top-1/3 w-full h-1/3 bg-white flex items-center justify-center">
                  <div className="w-3 h-3 rounded-full border border-[#000080]"></div>
                </div>
-               <div className="absolute bottom-0 w-full h-1/3 bg-[#138808]"></div>
-               <span className="relative z-10 text-slate-900 drop-shadow-md">N</span>
+               <div className="absolute bottom-0 w-full h-1/3 bg-[#0E6B06]"></div>
+               <span className="relative z-10 text-slate-900 drop-shadow-[0_1px_1px_rgba(255,255,255,1)]">N</span>
             </div>
             <div className="leading-tight">
               <div className="font-extrabold text-slate-900 text-lg tracking-tight">NIRVAHA</div>
@@ -78,9 +78,9 @@ export default function SidebarLayout({ children, activeTab, setActiveTab, roleT
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
         {/* Subtle Tiranga Top Border */}
         <div className="h-1 w-full flex">
-          <div className="h-full flex-1 bg-[#FF9933]"></div>
+          <div className="h-full flex-1 bg-[#E37000]"></div>
           <div className="h-full flex-1 bg-white"></div>
-          <div className="h-full flex-1 bg-[#138808]"></div>
+          <div className="h-full flex-1 bg-[#0E6B06]"></div>
         </div>
         
         <header className="h-20 bg-white/95 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-10 shrink-0 z-10 sticky top-0">
