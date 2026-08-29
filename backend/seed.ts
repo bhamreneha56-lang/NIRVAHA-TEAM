@@ -1,53 +1,66 @@
 import mongoose from 'mongoose';
+import { University } from './src/models/University';
+import { Industry } from './src/models/Industry';
+import { Problem } from './src/models/Problem';
+import { User } from './src/models/User';
 
-const problemSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  category: String,
-  district: String,
-  lat: Number,
-  lng: Number,
-  submitter: String,
-  status: { type: String, default: 'Submitted' },
-  priority: { type: String, default: 'Medium' },
-  reportedOn: { type: Date, default: Date.now },
-  upvotes: { type: Number, default: 0 },
-  photo: String,
-});
-const Problem = mongoose.model('Problem', problemSchema);
+const JHARKHAND_UNIVERSITIES = [
+  { name: 'Ranchi University', district: 'Ranchi', departments: ['Science', 'Arts', 'Commerce'] },
+  { name: 'Vinoba Bhave University (VBU)', district: 'Hazaribagh', departments: ['Science', 'Engineering'] },
+  { name: 'Sido Kanhu Murmu University (SKMU)', district: 'Dumka', departments: ['Arts', 'Science'] },
+  { name: 'Kolhan University', district: 'Chaibasa', departments: ['Science', 'Commerce'] },
+  { name: 'Nilamber-Pitamber University', district: 'Palamu', departments: ['Science', 'Arts'] },
+  { name: 'Binod Bihari Mahto Koyalanchal University (BBMKU)', district: 'Dhanbad', departments: ['Science', 'Engineering'] },
+  { name: 'Dr. Shyama Prasad Mukherjee University', district: 'Ranchi', departments: ['Science', 'Arts'] },
+  { name: 'Birsa Agricultural University (BAU)', district: 'Ranchi', departments: ['Agriculture', 'Veterinary Science'] },
+  { name: 'Jharkhand Raksha Shakti University', district: 'Ranchi', departments: ['Security Science'] },
+  { name: 'Jharkhand University of Technology (JUT)', district: 'Ranchi', departments: ['Engineering', 'Technology'] },
+  { name: 'Central University of Jharkhand (CUJ)', district: 'Ranchi', departments: ['Energy Engineering', 'Environmental Sciences'] },
+  { name: 'IIT (ISM) Dhanbad', district: 'Dhanbad', departments: ['Mining', 'Petroleum', 'Computer Science'] },
+  { name: 'BIT Mesra', district: 'Ranchi', departments: ['Computer Science', 'Electronics'] },
+  { name: 'NIT Jamshedpur', district: 'East Singhbhum', departments: ['Mechanical', 'Civil', 'Computer Science'] },
+  { name: 'IIIT Ranchi', district: 'Ranchi', departments: ['Computer Science', 'Electronics'] },
+  { name: 'AIIMS Deoghar', district: 'Deoghar', departments: ['Medical', 'Healthcare'] },
+  { name: 'National University of Study and Research in Law', district: 'Ranchi', departments: ['Law'] },
+  { name: 'Amity University', district: 'Ranchi', departments: ['Management', 'Engineering'] },
+  { name: 'Arka Jain University', district: 'Jamshedpur', departments: ['Commerce', 'Management'] },
+  { name: 'YBN University', district: 'Ranchi', departments: ['Science', 'Nursing'] },
+  { name: 'AISECT University', district: 'Hazaribagh', departments: ['Skill Development', 'Management'] },
+  { name: 'Netaji Subhas University', district: 'Jamshedpur', departments: ['Management', 'IT'] },
+  { name: 'Usha Martin University', district: 'Ranchi', departments: ['Management', 'Engineering'] },
+  { name: 'Capital University', district: 'Koderma', departments: ['Arts', 'Science'] },
+  { name: 'Jharkhand Rai University', district: 'Ranchi', departments: ['Mining', 'Agriculture'] },
+  { name: 'Radha Govind University', district: 'Ramgarh', departments: ['Science', 'Education'] },
+  { name: 'Ramchandra Chandravansi University', district: 'Palamu', departments: ['Medical', 'Science'] },
+  { name: 'Sarala Birla University', district: 'Ranchi', departments: ['Engineering', 'Management'] },
+  { name: 'Sai Nath University', district: 'Ranchi', departments: ['Agriculture', 'Law'] },
+  { name: 'Pragyan International University', district: 'Ranchi', departments: ['Yoga', 'Wellness'] }
+];
 
-async function main() {
-  await mongoose.connect('mongodb://localhost:27017/nirvaha');
-  await Problem.deleteMany({}); // clear existing
-  const p1 = new Problem({
-    title: "Handpump failure in Toli village for 3 weeks",
-    description: "The single community handpump serving 42 households in Toli village (block: Bundu) has been dry since 12 August.",
-    category: "Water",
-    district: "Ranchi",
-    lat: 23.33,
-    lng: 85.33,
-    submitter: "Community Group",
-    status: "Routed to University",
-    priority: "High",
-    upvotes: 34
-  });
-  await p1.save();
+async function seed() {
+  try {
+    await mongoose.connect('mongodb://localhost:27017/nirvaha');
+    console.log('Connected to DB for seeding...');
 
-  const p2 = new Problem({
-    title: "Pothole cluster on NH-33 near Sikidiri",
-    description: "Three major potholes on NH-33 stretch between Sikidiri and Godda have caused 4 two-wheeler accidents this monsoon. No signage, no barricades.",
-    category: "Roads",
-    district: "Godda",
-    lat: 24.84,
-    lng: 87.22,
-    submitter: "Individual",
-    status: "In Progress",
-    priority: "Urgent",
-    upvotes: 89
-  });
-  await p2.save();
+    // Clear DB
+    await University.deleteMany({});
+    await Industry.deleteMany({});
+    await Problem.deleteMany({});
+    await User.deleteMany({});
 
-  console.log("Database seeded successfully:", p1._id, p2._id);
-  await mongoose.disconnect();
+    // Seed Universities
+    const insertedUnis = await University.insertMany(JHARKHAND_UNIVERSITIES);
+    console.log('Inserted ' + insertedUnis.length + ' Jharkhand Universities');
+
+    // Seed mock analytics user so things work
+    await User.create({ name: 'Gov Admin', email: 'gov@jharkhand.gov.in', password: 'mock', role: 'GOVERNMENT' });
+
+    console.log('Seeding complete!');
+    process.exit(0);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 }
-main();
+
+seed();

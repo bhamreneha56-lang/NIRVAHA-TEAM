@@ -115,7 +115,7 @@ export default function GovDashboard() {
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-500 text-5xl">🎓</div>
           <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">HEI Participation</div>
-          <div className="text-4xl font-black text-slate-900 mt-1">12</div>
+          <div className="text-4xl font-black text-slate-900 mt-1">30</div>
           <div className="flex items-center gap-1 text-xs text-green-600 mt-3 font-semibold">
             <span>Universities onboarded</span>
           </div>
